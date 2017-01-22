@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Lat:</strong>
+  <%= @gp.lat %>
+</p>
+
+<p>
+  <strong>Lon:</strong>
+  <%= @gp.lon %>
+</p>
+
+<%= link_to 'Edit', edit_gp_path(@gp) %> |
+<%= link_to 'Back', gps_path %>

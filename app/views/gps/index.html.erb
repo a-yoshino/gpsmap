@@ -1,0 +1,29 @@
+<h1>Listing gps</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Lat</th>
+      <th>Lon</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @gps.each do |gp| %>
+      <tr>
+        <td><%= gp.lat %></td>
+        <td><%= gp.lon %></td>
+        <td><%= link_to 'Show', gp %></td>
+        <td><%= link_to 'Edit', edit_gp_path(gp) %></td>
+        <td><%= link_to 'Destroy', gp, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Gp', new_gp_path %>
