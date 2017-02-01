@@ -1,6 +1,6 @@
 class GpsController < ApplicationController
   before_action :set_gp, only: [:show, :edit, :update, :destroy]
-
+  protect_from_forgery :except => [:post]
   # GET /gps
   # GET /gps.json
   def index
