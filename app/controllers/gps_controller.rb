@@ -64,7 +64,9 @@ class GpsController < ApplicationController
   def getNearPoints
     @gps = Gp.findNearPoints(params[:lat], params[:lon], params[:acc])
     
-    if @gps.length > 1 then
+    p @gps.length
+    if @gps.length > 0 then
+      p "there are some gakkon points!"
       notify_to_slack
     end
 
