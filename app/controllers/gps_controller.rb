@@ -63,6 +63,11 @@ class GpsController < ApplicationController
 
   def getNearPoints
     @gps = Gp.findNearPoints(params[:lat], params[:lon], params[:acc])
+    
+    if @gps.length > 1 then
+      notify_to_slack
+    end
+
     render json: @gps
 
   end
@@ -76,5 +81,13 @@ class GpsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def gp_params
       params.require(:gp).permit(:lat, :lon)
+    end
+
+    def notify_to_slack
+      text = <<-EOC
+[注意]近くにガッコンポイントがあるよ！！
+      EOC
+
+      Slack.chat_postMessage text: text, username: "GakkonBot", channel: "#gakkon"
     end
 end
