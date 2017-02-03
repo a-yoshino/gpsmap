@@ -33,15 +33,21 @@ class GpsController < ApplicationController
     if @gps.length > 0 then
       text = <<-EOS
 [お知らせ]もうガッコンポイントとして登録されてるよ！！
-(#{@gp[:lat]}, #{@gp[:lon]}
+(#{@gp[:lat]}, #{@gp[:lon]})
       EOS
       channel = "#gakkon_regist"
       notify_to_slack(text, channel)
-      format.json { render json: {message: "This Gakkkon Point has already registered!"} , status: :ok }
+      format.json { render json: @gp , status: :conflict }
     end
 
     respond_to do |format|
       if @gp.save
+        text = <<-EOS
+[お知らせ]ガッコンポイントを新しく登録したよ！！
+(#{@gp[:lat]}, #{@gp[:lon]})
+        EOS
+        channel = "#gakkon_regist"
+        notify_to_slack(text, channel)
         format.html { redirect_to @gp, notice: 'Gp was successfully created.' }
         format.json { render action: 'show', status: :created, location: @gp }
       else
