@@ -30,6 +30,10 @@ class GpsController < ApplicationController
 
     @gps = Gp.findNearPoints(@gp[:lat], @gp[:lon], accuracy)
 
+    if @gp[:lat] <= 0 || @gp[:lon] <= 0 then
+      format.json { render json: @gp, status: :bad_request}
+    end
+
     if @gps.length > 0 then
       text = <<-EOS
 [お知らせ]もうガッコンポイントとして登録されてるよ！！
