@@ -26,6 +26,20 @@ class GpsController < ApplicationController
   def create
     @gp = Gp.new(gp_params)
 
+    accuracy = 0.000015 # 1.5m相当
+
+    @gps = Gp.findNearPoints(@gp[:lat], @gp[:lon], accuracy)
+
+    if @gps.length > 0 then
+      text = <<-EOS
+[お知らせ]もうガッコンポイントとして登録されてるよ！！
+(#{@gp[:lat]}, #{@gp[:lon]}
+      EOS
+      channel = "#gakkon_regist"
+      notify_to_slack(text, channel)
+      format.json { render json: {message: "This Gakkkon Point has already registered!"} , status: :ok }
+    end
+
     respond_to do |format|
       if @gp.save
         format.html { redirect_to @gp, notice: 'Gp was successfully created.' }
@@ -66,8 +80,9 @@ class GpsController < ApplicationController
     
     p @gps.length
     if @gps.length > 0 then
-      p "there are some gakkon points!"
-      notify_to_slack
+      text = "[注意]近くにガッコンポイントがあるよ！！"
+      channel = "#gakkon"
+      notify_to_slack(text, channel)
     end
 
     render json: @gps
@@ -85,11 +100,8 @@ class GpsController < ApplicationController
       params.require(:gp).permit(:lat, :lon)
     end
 
-    def notify_to_slack
-      text = <<-EOC
-[注意]近くにガッコンポイントがあるよ！！
-      EOC
+    def notify_to_slack(text, channel)
 
-      Slack.chat_postMessage text: text, username: "GakkonBot", channel: "#gakkon"
+      Slack.chat_postMessage text: text, username: "GakkonBot", channel: channel
     end
 end
